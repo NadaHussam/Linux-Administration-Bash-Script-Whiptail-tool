@@ -25,7 +25,7 @@ This Bash script collection provides a user-friendly graphical interface for man
 **How to Use:**
 1. **Clone the repository:** 
    ```bash
-   git clone https://your-repository-url.git
+   git clone https://github.com/NadaHussam/Linux-Administration-Bash-Script-Whiptail-tool.git
    ```
 2. **Make the scripts executable:**
    ```bash
