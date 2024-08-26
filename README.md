@@ -17,17 +17,9 @@ This Bash script collection provides a user-friendly graphical interface for man
 
 **Prerequisites:**
 * **whiptail:** This script requires the `whiptail` package to be installed on your system. You can typically install it using your package manager:
-  * **Debian/Ubuntu:**
-    ```bash
-    sudo apt install whiptail
-    ```
   * **Fedora/CentOS/RHEL:**
     ```bash
     sudo dnf install whiptail
-    ```
-  * **macOS (Homebrew):**
-    ```bash
-    brew install whiptail
     ```
 
 **How to Use:**
