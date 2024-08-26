@@ -1,0 +1,33 @@
+#!/bin/bash
+while true;do
+# Use whiptail to prompt for the group name
+GROUP=$(whiptail --cancel-button "Exit" --inputbox "Enter the group name:" 8 40 --title "Add Group" 3>&1 1>&2 2>&3)
+if [ $? != 0 ]; then continue 2; fi
+##############################################################
+
+# Check if the user entered a group name
+if [ -n "$GROUP" ]; then
+# Use the getent command to check if a group with the same name already exists
+    if getent group "$GROUP" >/dev/null 2>&1; then
+# Use whiptail to display an error message if the group already exists
+        whiptail --msgbox "Group $GROUP already exists." 8 40 --title "Add Group"
+        if [ $? != 0 ]; then continue; fi
+###############################################################
+        
+    else
+# Use the groupadd command to add the group with the specified name
+        groupadd "$GROUP"
+
+# Use whiptail to display a message confirming the group was added
+        whiptail --msgbox "Group $GROUP was added successfully." 8 40 --title "Add Group"
+        break
+    fi
+ ##############################################################
+else
+ # Use whiptail to display an error message if the user did not enter a group name
+    whiptail --msgbox "Please enter a group name." 8 40 --title "Add Group"
+    continue
+fi
+done
+continue
+

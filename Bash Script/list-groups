@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Use the awk command to extract the groupname and GID from the /etc/group file and format them as "gid: groupname"
+#GROUPS=$(awk -F: '{print "GID" " " $3 ":" $1}' /etc/group)
+
+# Use whiptail to display a message box with the list of groups and their GID in the form "gid: groupname"
+whiptail --scrolltext --msgbox "$(awk -F: '{print "GID" " " $3 ":" $1}' /etc/group)" 20 60 --title "List of Groups"

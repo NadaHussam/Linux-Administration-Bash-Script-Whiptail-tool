@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Use whiptail to prompt for the group name
+GROUP=$(whiptail --cancel-button "Exit" --inputbox "Enter the group name:" 8 40 --title "Modify Group" 3>&1 1>&2 2>&3)
+if [ $? != 0 ]; then continue; fi
+    
+# Check if the user entered a group name
+if getent group "$GROUP" >/dev/null 2>&1; then
+# Use whiptail to display a menu of options for modifying the group
+
+while true; do
+    CHOICE=$(whiptail --cancel-button "Exit" --title "Modify Group" --radiolist \ "Select an option:" 15 60 6 \
+        "1" "Change group name" ON \
+        "2" "Add user to group" OFF \
+        "3" "Remove user from group" OFF \
+        "4" "Delete group" OFF \
+        "5" "Change GID" OFF\
+        "6" "Exit" OFF\
+        3>&1 1>&2 2>&3)
+        
+ 	if [ $? != 0 ]; then continue; fi
+#################################################################
+# Check the user's choice and perform the appropriate action
+    case $CHOICE in
+        "1")
+# Use whiptail to prompt for a new group name
+            NEWGROUP=$(whiptail --cancel-button "Exit" --inputbox "Enter the new group name:" 8 40 --title "Change Group Name" 3>&1 1>&2 2>&3)
+# Use the groupmod command to change the group name
+	if [ $? != 0 ]; then whiptail --msgbox "Please enter a group name." 8 40 --title "Add Group"; continue; fi	
+		groupmod -n "$NEWGROUP" "$GROUP"
+		whiptail --msgbox "Group name changed to $NEWGROUP." 8 40 --title "Change Group Name"
+            ;;
+          ###################################################
+        "2")
+# Use the usermod command to add the user to the group
+	  members=$(awk -F: -v GROUP="$GROUP" '{if ($1 == GROUP) print $4}' /etc/group)
+          new_m=$(whiptail --cancel-button "Exit" --inputbox "Enter group members:" 8 39 "${members}" --title "Add User to Group" 3>&1 1>&2 2>&3)
+	if [ $? != 0 ]; then continue; fi
+          groupmod -aU $new_m $GROUP
+	  whiptail --msgbox "User $new_m added to group $GROUP." 8 40 --title "Add User to Group" 
+            ;;
+          ##################################################  
+        "3")
+# Use whiptail to prompt for a username
+	USER=$(whiptail --cancel-button "Exit" --inputbox "Enter the username to remove from group $GROUP:" 8 40 --title "Remove User from Group" 3>&1 1>&2 2>&3)
+# Use the gpasswd command to remove the user from the group
+	if [ $? != 0 ]; then continue; fi
+            gpasswd -d "$USER" "$GROUP"
+            whiptail --msgbox "User $USER removed from group $GROUP." 8 40 --title "Remove User from Group"
+            ;;
+          ##################################################  
+        "4")
+# Use the groupdel command to delete the group
+            if [ $? != 0 ]; then continue; fi
+            	groupdel "$GROUP"
+            	whiptail --msgbox "Group $GROUP deleted." 8 40 --title "Delete Group"
+            ;;
+          ###################################################
+ 	"5")
+ 	gid=$(whiptail --cancel-button "Exit" --inputbox "Enter new GID:" 8 39 "" --title "Modify Group" 3>&1 1>&2 2>&3)
+          if [ $? != 0 ]; then continue; fi
+          	groupmod -g "${gid}" "$GROUP"
+          	whiptail --msgbox "GID changed to $gid" 8 40 --title "Change GID"
+          ;;   
+          ####################################################
+          "6")
+          continue 2
+          ;;
+    esac
+ ################################################################
+done
+else
+# Use whiptail to display an error message if the user did not enter a group name
+	whiptail --msgbox "group not exist" 8 40 --title "Modify Group"
+fi
+continue
+

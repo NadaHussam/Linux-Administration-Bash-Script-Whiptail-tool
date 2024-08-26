@@ -1,0 +1,32 @@
+#!/bin/bash 
+while true;do
+# Use whiptail to prompt for the username and password
+USER=$(whiptail --cancel-button "Exit" --inputbox "Enter the username:" 8 40 --title "Add User" 3>&1 1>&2 2>&3)
+if [ $? != 0 ]; then continue 2; fi
+if [ -z "$USER" ]; then whiptail --msgbox "Please enter a username." 8 40 --title "Add User"; continue; fi
+
+PASSWORD=$(whiptail --cancel-button "Exit" --passwordbox "Enter the password:" 8 40 --title "Add User" 3>&1 1>&2 2>&3)
+if [ $? != 0 ]; then continue; fi
+################################################################################
+
+# Check if the user entered a username and password
+if [ -n "$USER" ] && [ -n "$PASSWORD" ]; then
+# Use the id command to check if a user with the same name already exists
+    if id "$USER" >/dev/null 2>&1; then
+# Use whiptail to display an error message if the user already exists
+        whiptail --msgbox "User $USER already exists." 8 40 --title "Add User"
+    else
+# Use the useradd command to add the user with the specified username and password
+        useradd -m -p $(openssl passwd -1 $PASSWORD) $USER
+
+# Use whiptail to display a message confirming the user was added
+        whiptail --msgbox "User $USER was added successfully." 8 40 --title "Add User"
+        break
+    fi
+else
+# Use whiptail to display an error message if the user did not enter a username or password
+    whiptail --msgbox "Please enter a username and password." 8 40 --title "Add User"
+    
+fi
+done
+continue 

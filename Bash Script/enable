@@ -1,0 +1,26 @@
+#!/bin/bash
+
+while true; do
+# Use whiptail to prompt for the username
+USER=$(whiptail --cancel-button "Exit" --inputbox "Enter the username:" 8 40 --title "Enable User Account" 3>&1 1>&2 2>&3)
+if [ $? != 0 ]; then continue 2; fi
+############################################################
+# Check if the user entered a username
+if [ -n "$USER" ]; then
+
+# Use the usermod command to enable the user's account by removing the password lock
+	usermod -U "$USER"
+############################################################
+ # Use the passwd command to print the account status as "PS" (password set)
+	STATUS=$(passwd -S "$USER" | awk '{print $2}')
+ # Use whiptail to display a message confirming the user's account was enabled and display account status
+	whiptail --msgbox "Account for user $USER has been enabled.\nAccount status: $STATUS" 8 60 --title "Enable User Account"
+	break
+#############################################################
+else
+ # Use whiptail to display an error message if the user did not enter a username
+	whiptail --msgbox "Please enter a username." 8 40 --title "Enable User Account"
+fi
+done
+continue
+

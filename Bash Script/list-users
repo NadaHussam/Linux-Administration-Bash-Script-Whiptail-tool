@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Use the awk command to extract the username and UID from the /etc/passwd file and format them as "uid: username"
+USERS=$(awk -F: '{print "UID" " " $3 ":" $1}' /etc/passwd)
+
+# Use whiptail to display a message box with the list of users and their UID in the form "uid: username"
+whiptail  --scrolltext --msgbox "$USERS" 20 60 --title "List of Users"
