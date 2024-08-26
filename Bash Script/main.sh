@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #xsetroot -bitmap /mnt/hgfs/bashproject/welcome.jpg
-whiptail --title "My Dialog" --msgbox "Welcome to my script!" 10 30
+whiptail --title "My Dialog" --msgbox "Welcome!" 10 30
 #if [ "$(id -u)" -ne 0 ]; then echo "Please run as root." >&2; exit 1; fi
 ##################################################################################
 while true; do 
